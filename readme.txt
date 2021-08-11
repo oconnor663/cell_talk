@@ -1,0 +1,26 @@
+- assume you've seen Arc<Mutex>>, "interior mutability"
+- normally you can't mutate data through a shared reference
+- "If I'm not using multiple threads, and I'm not taking interior pointers
+  to things, why can't I mutate through a shared reference?"
+- "Why is Rust so restrictive? Why not have something in between & and &mut?"
+- Well there is something, and it's called Cell.
+  - There's also RefCell, which looks a lot like Mutex, basically you lock
+    it. We're not going to look at that.
+- Cell can read and write Copy contents through a shared reference
+- non-Copy contents can be taken (or into_inner'd) but not cloned
+  - why not? wait until the end.
+- Cell is send (thread::spawn)
+- but not sync (rayon)
+- which means Arc<Cell> is not Send
+- rare because multithreading is the most common reason for aliasing
+- UnsafeCell
+  - aliasing with Cell: https://godbolt.org/z/88sv37YbG
+  - MyCell: https://godbolt.org/z/cjMTT3xa9
+  - MyCell: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=410558ec9808aad986706b575fb8654b
+- advanced reference and slice casts (from_mut and as_slice_of_cells)
+- circular Cells and an unsound clone function
+  - the fundamental problem: we can't know what .clone() is doing.
+  - https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=65b3554108e882172db5f7d594b1e3ae
+- Behold the complexity! This is why Rust references work the way they do.
+- http://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/
+  - https://github.com/rust-lang/rust/blob/c9d4ad07c4c166d655f11862e03c10100dcb704b/doc/tutorial-borrowed-ptr.md
