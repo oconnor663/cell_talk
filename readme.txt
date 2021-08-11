@@ -1,26 +1,32 @@
-- assume you've seen Arc<Mutex>>, "interior mutability"
-- normally you can't mutate data through a shared reference
 - "If I'm not using multiple threads, and I'm not taking interior pointers
   to things, why can't I mutate through a shared reference?"
 - "Why is Rust so restrictive? Why not have something in between & and &mut?"
-- Well there is something, and it's called Cell.
-  - There's also RefCell, which looks a lot like Mutex, basically you lock
-    it. We're not going to look at that.
-- Cell can read and write Copy contents through a shared reference
+- this in between thing is called "interior mutability"
+- you've seen Arc<Mutex>>. note how it's letting you get &mut from &.
+- there's also RwLock, which is the same but with many writers
+- there's also RefCell, which is like RwLock but single-threaded
+  - demo Send and Sync
+  - note that Arc isn't Send when its contents aren't Sync
+  - rare because multithreading is the most common reason for aliasing
+  - side note, Mutex is always Sync, RwLock is not
+- these are all fundamentally similar. they're all about getting your hands on &mut
+- but there's another interior mutability type that's really different: Cell
+- Cell can .get() and .set() through a shared reference, with zero overhead. There is no lock, no state.
 - non-Copy contents can be taken (or into_inner'd) but not cloned
   - why not? wait until the end.
-- Cell is send (thread::spawn)
-- but not sync (rayon)
-- which means Arc<Cell> is not Send
-- rare because multithreading is the most common reason for aliasing
+- advanced reference and slice casts (from_mut and as_slice_of_cells)
+  - Cell is #[repr(transparent)]
 - UnsafeCell
   - aliasing with Cell: https://godbolt.org/z/88sv37YbG
   - MyCell: https://godbolt.org/z/cjMTT3xa9
   - MyCell: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=410558ec9808aad986706b575fb8654b
-- advanced reference and slice casts (from_mut and as_slice_of_cells)
 - circular Cells and an unsound clone function
   - the fundamental problem: we can't know what .clone() is doing.
   - https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=65b3554108e882172db5f7d594b1e3ae
+
 - Behold the complexity! This is why Rust references work the way they do.
+
 - http://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/
-  - https://github.com/rust-lang/rust/blob/c9d4ad07c4c166d655f11862e03c10100dcb704b/doc/tutorial-borrowed-ptr.md
+- https://github.com/rust-lang/rust/blob/c9d4ad07c4c166d655f11862e03c10100dcb704b/doc/tutorial-borrowed-ptr.md
+- https://medium.com/@GolDDranks/things-rust-doesnt-let-you-do-draft-f596a3c740a5
+- https://users.rust-lang.org/t/why-does-cell-require-copy-instead-of-clone/5769/3
