@@ -11,7 +11,8 @@
   - side note, Mutex is always Sync, RwLock is not
 - these are all fundamentally similar. they're all about getting your hands on &mut
 - but there's another interior mutability type that's really different: Cell
-- Cell can .get() and .set() through a shared reference, with zero overhead. There is no lock, no state.
+- Cell .set() through a shared reference, with zero overhead. There is no lock, no state.
+- Most common use case is .get() with Copy types.
 - non-Copy contents can be taken (or into_inner'd) but not cloned
   - why not? wait until the end.
 - advanced reference and slice casts (from_mut and as_slice_of_cells)
@@ -24,7 +25,17 @@
   - the fundamental problem: we can't know what .clone() is doing.
   - https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=65b3554108e882172db5f7d594b1e3ae
 
-- Behold the complexity! This is why Rust references work the way they do.
+- &Cell<T> is kind of like a fundamental pointer type, in between & and &mut
+  - aliasing and mutability are allowed
+  - multithreading is forbidden
+  - interior references are mostly forbidden
+    - pointing into a Vec or enum would be unsafe
+    - pointing into &[T] 
+- missing features:
+  - Cell projection. The standard library supports it for slices but not for
+    struct fields or tuple elements.
+    - But there is https://crates.io/crates/cell-project.
+  - Method receivers.
 
 - http://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/
 - https://github.com/rust-lang/rust/blob/c9d4ad07c4c166d655f11862e03c10100dcb704b/doc/tutorial-borrowed-ptr.md
