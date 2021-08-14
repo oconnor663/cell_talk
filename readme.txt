@@ -37,7 +37,7 @@
   - MyCell: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=410558ec9808aad986706b575fb8654b
 - circular Cells and an unsound clone function
   - the fundamental problem: we can't know what .clone() is doing.
-  - https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=65b3554108e882172db5f7d594b1e3ae
+  - https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=fde5ad24988b4342d77563a1507ed439
   - This fails Miri.
 
 - http://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/
