@@ -2,7 +2,9 @@
   to things, why can't I mutate through a shared reference?"
 - "Why is Rust so restrictive? Why not have something in between & and &mut?"
 - this in between thing is called "interior mutability"
-- you've seen Arc<Mutex>>. note how it's letting you get &mut from &.
+- you've seen Arc<Mutex>>
+  - note how it's letting you get &mut from &.
+  - but this doesn't violate the fundamental &mut rule
 - there's also RwLock, which is the same but with many writers
 - there's also RefCell, which is like RwLock but single-threaded
   - demo Send and Sync
@@ -11,31 +13,31 @@
   - side note, Mutex is always Sync, RwLock is not
 - these are all fundamentally similar. they're all about getting your hands on &mut
 - but there's another interior mutability type that's really different: Cell
-- Cell .set() through a shared reference, with zero overhead. There is no lock, no state.
-- Most common use case is .get() with Copy types.
-- non-Copy contents can be taken (or into_inner'd) but not cloned
-  - why not? wait until the end.
+  - also rare, like RefCell
+- set() through a shared reference
+- get() with Copy types
+- swap/replace/take() or into_inner() with non-Copy types
+  - why not clone()? wait until the end...
+- so wait, isn't this a crappier RefCell with more restrictions?
+  - well, for one thing it has no space overhead, but more importantly...
 - advanced reference and slice casts (from_mut and as_slice_of_cells)
   - Cell is #[repr(transparent)]
-- UnsafeCell
+- &Cell<T> is a third pointer type, in between & and &mut
+  - aliasing and mutability are allowed together!
+  - multithreading is forbidden
+  - interior references are mostly forbidden, pointing into a Vec or enum would be unsafe
+  - missing features:
+    - Cell projection. The standard library supports projecting into slices but
+      not structs or tuples. https://crates.io/crates/cell-project.
+    - Method receivers. https://github.com/rust-lang/rust/issues/44874
+- But Cell is just some library struct? How does Rust know it's so special?
+  - UnsafeCell
   - aliasing with Cell: https://godbolt.org/z/88sv37YbG
   - MyCell: https://godbolt.org/z/cjMTT3xa9
   - MyCell: https://play.rust-lang.org/?version=stable&mode=debug&edition=2018&gist=410558ec9808aad986706b575fb8654b
 - circular Cells and an unsound clone function
   - the fundamental problem: we can't know what .clone() is doing.
   - https://play.rust-lang.org/?version=stable&mode=release&edition=2018&gist=65b3554108e882172db5f7d594b1e3ae
-
-- &Cell<T> is kind of like a fundamental pointer type, in between & and &mut
-  - aliasing and mutability are allowed
-  - multithreading is forbidden
-  - interior references are mostly forbidden
-    - pointing into a Vec or enum would be unsafe
-    - pointing into &[T] 
-- missing features:
-  - Cell projection. The standard library supports it for slices but not for
-    struct fields or tuple elements.
-    - But there is https://crates.io/crates/cell-project.
-  - Method receivers.
 
 - http://smallcultfollowing.com/babysteps/blog/2012/11/18/imagine-never-hearing-the-phrase-aliasable/
 - https://github.com/rust-lang/rust/blob/c9d4ad07c4c166d655f11862e03c10100dcb704b/doc/tutorial-borrowed-ptr.md
