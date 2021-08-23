@@ -19,9 +19,10 @@
 - swap/replace/take() or into_inner() with non-Copy types
   - why not clone()? wait until the end...
 - so wait, isn't this a crappier RefCell with more restrictions?
-  - well, for one thing it has no space overhead, but more importantly...
-- advanced reference and slice casts (from_mut and as_slice_of_cells)
-  - Cell is #[repr(transparent)]
+  - well, for one thing it has no space overhead, #[repr(transparent)]. but more importantly...
+  - from_mut and as_slice_of_cells
+  - compare to slice::from_mut and array::from_mut.
+  - also note that GhostCell exists
 - &Cell<T> is a third pointer type, in between & and &mut
   - aliasing and mutability are allowed together!
   - multithreading is forbidden
