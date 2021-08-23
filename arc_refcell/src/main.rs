@@ -19,4 +19,11 @@ fn main() {
         thread.join().unwrap();
     }
     dbg!(my_string);
+
+    let my_string = &RefCell::new(String::new());
+    // my_string.borrow_mut().push_str("x");
+    let mut guard: RefMut<String> = my_string.borrow_mut();
+    let my_string_mut: &mut String = guard.deref_mut();
+    my_string_mut.push_str("x");
+    dbg!(my_string);
 }
