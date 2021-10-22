@@ -2,7 +2,12 @@
   to things, why can't I mutate through a shared reference?"
 - "Why is Rust so restrictive? Why not have something in between & and &mut?"
 - this in between thing is called "interior mutability"
-- you've seen Arc<Mutex>>
+- atomics
+  - work just like in C and C++
+    - recommend Herb Sutter's Atomic Weapons
+  - ...which is actually kind of surprising!
+  - but atomics aren't generic
+- you've also seen Arc<Mutex>>
   - note how it's letting you get &mut from &.
   - but this doesn't violate the fundamental &mut rule
 - there's also RwLock, which is the same but with many writers
