@@ -1,3 +1,5 @@
+Interior Mutability Intermediate and Advanced Rust Programmers
+
 The mutable aliasing rule has loopholes: interior mutability.
 Mutex
   - Normally: Append to a string from multiple threads.

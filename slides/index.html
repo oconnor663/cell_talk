@@ -46,28 +46,20 @@ tt{
         <div class="reveal">
             <div class="slides">
                 <section>
-                    <h1>A <span style="color: #dc322f">Firehose</span> of Rust</h1>
-                    <h2>for busy people who know some C++</h2>
+                    <h1>Interior Mutability</h1>
+                    <h2 style="color: #93a1a1">for Intermediate and Advanced Rust Programmers</h2>
                 </section>
 
-                <section data-markdown><textarea data-template>
-<div class="wrap">
-<p>Rust is a big language. We don't have time for:</p>
+                <section style="font-size: 1.5em" data-markdown><textarea data-template>
+                        <h2>Topics</h2>
 
-- syntax
-- enums (tagged unions) and <tt>Option</tt>
-- error handling with <tt>Result</tt> and <tt>?</tt>
-- generics (templates) and traits
-- <tt>unsafe</tt> code
-- <tt>extern</tt> and interoperating with C
-- Cargo
-
-<p>Instead, we're going to focus on three big ideas:</p>
-
-- references
-- mutable aliasing
-- move semantics
-</div>
+- <tt>Mutex</tt>
+- <tt>RwLock</tt>
+- atomics
+- <tt>RefCell</tt>
+- <tt>Cell</tt>
+- <tt>&amp;Cell</tt>
+- <tt>UnsafeCell</tt>
                  </textarea></section>
 
                 <section data-markdown><textarea data-template>
