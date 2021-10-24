@@ -1,3 +1,34 @@
+The mutable aliasing rule has loopholes: interior mutability.
+Mutex
+  - Normally: Append to a string from multiple threads.
+  - Here: Take two aliasing references to the same string and increment it.
+RwLock
+  - why not always use RwLock? hold that thought
+Atomics
+  - kind of like a mutex, but at the hardware level
+  - into_iter() vs into_par_iter() contention benchmarks
+  - link to Atomic Weapons
+RefCell
+  - Aliasing on a single thread, without getting the OS or the hardware involved.
+  - This is kind of exotic. Aliasing between different threads is sort of the
+    whole point of multithreading, but most single threaded programs can be
+    written without any aliasing.
+  - Send and Sync
+  - note that Mutex is always Sync
+- Cell
+  - But once we're on a single thread, why do we need to lock anything at all?
+    What could go wrong?
+  - Well, interior references into a Vec would be UB. But what if we forbid
+    those?
+  - "Interior" mutability is kind of a misnomer here, because there's no
+    exterior.
+- &Cell
+  - Holy shit.
+- UnsafeCell
+- an unsound Cell
+- unsoundness in clone_cell()
+
+
 - "If I'm not using multiple threads, and I'm not taking interior pointers
   to things, why can't I mutate through a shared reference?"
 - "Why is Rust so restrictive? Why not have something in between & and &mut?"
