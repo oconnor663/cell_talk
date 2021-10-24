@@ -1,6 +1,18 @@
 The mutable aliasing rule has loopholes: interior mutability.
 Mutex
   - Normally: Append to a string from multiple threads.
+    - example from Firehose
+    - This talk is for people who have learned enough Rust that this example
+      feels pretty comfortable. If you haven't written any Rust yourself yet,
+      the talk will be pretty hard to follow, but more importantly it might not
+      be clear *why we care* about any of this.
+    - The first time we see this example, the focus is usually on what Arc is
+      doing, and how that interacts with .clone() and the move closure. But
+      today, we're going to dive deep on what Mutex is doing.
+      - Of course, we all know what it's doing: it's locking the String so that
+        only one thread mutates it at a time. That's the same in any language.
+        But let's take a close look at it, from the perspective of the mutable
+        aliasing rule in Rust.
   - Here: Take two aliasing references to the same string and increment it.
 RwLock
   - why not always use RwLock? hold that thought
