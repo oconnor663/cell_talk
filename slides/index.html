@@ -101,7 +101,7 @@ tt{
 
 
                 <section style="font-size: 2em">
-                    Mutable aliasing with <tt>Mutex&lt;T&gt;</tt>
+                    Mutable aliasing with <tt>Mutex</tt>
                             <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
     let my_string: Mutex<String> = Mutex::new(String::new());
     let reference1 = &my_string;
@@ -115,7 +115,7 @@ tt{
 
 
                 <section style="font-size: 1em">
-                    Mutable aliasing <em>without</em> <tt>Mutex&lt;T&gt;</tt>
+                    Mutable aliasing <em>without</em> <tt>Mutex</tt>
                     <div class="centercolumn" style="width: 34em">
                         <style>
                             pre {
@@ -163,6 +163,25 @@ error[E0499]: cannot borrow `my_string` as mutable more than once at a time
                             </script></code></pre>
                     </div>
                 </section>
+
+
+
+
+                <section style="font-size: 2em">
+                    <tt>Mutex::lock()</tt> in the docs</tt>
+                <p>
+                    <a href="https://doc.rust-lang.org/std/sync/struct.Mutex.html#method.lock"><img src="mutex_lock.png"></a>
+                    <a href="https://docs.rs/rustc-std-workspace-std/1.0.1/std/sync/struct.MutexGuard.html"><img src="mutexguard_derefmut.png"></a>
+                </section>
+
+                <section style="font-size: 2em">
+                    <tt>Mutex::lock()</tt> in the docs</tt>
+                <p>
+                    <a href="https://doc.rust-lang.org/std/sync/struct.Mutex.html#method.lock"><img src="mutex_lock_arrow.png"></a>
+                    <a href="https://docs.rs/rustc-std-workspace-std/1.0.1/std/sync/struct.MutexGuard.html"><img src="mutexguard_derefmut.png"></a>
+                </section>
+
+
 
 
 
