@@ -21,12 +21,16 @@
 }
 .col{
     flex: 1;
+    padding: 0 1em;
 }
 tt{
     background-color: #eee8d5;
     padding: 0 .1em;
     border-radius: .2em;
     font-family: 'Ubuntu Mono', monospace;
+}
+.reveal pre {
+    width: 100%;
 }
 .reveal pre code{
     font-family: 'Ubuntu Mono', monospace;
@@ -42,14 +46,8 @@ tt{
 }
 .centercolumn {
     margin: auto;
-    text-align: left;
-}
-.centercolumn pre {
-    margin-left: 0;
-    margin-right: 0;
 }
 .lefttext {
-    padding-left: 40px;
     text-align: left;
     font-size: 0.75em;
 }
@@ -120,15 +118,8 @@ tt{
 
                 <section style="font-size: 1em">
                     Aliasing and mutation <em>without</em> <tt>Mutex</tt>
-                    <div class="centercolumn" style="width: 34em">
-                        <style>
-                            pre {
-                                margin-left: 0;
-                                margin-right: 0;
-                            }
-                        </style>
-                    <p>
-                            shared references
+                    <div class="centercolumn" style="width: 30em">
+                        <p class="lefttext">shared references</p>
                             <pre class="rust"><code data-trim><script type="text/template">
     let my_string = String::new();
     let reference1 = &my_string;
@@ -136,7 +127,7 @@ tt{
     reference1.push_str("abc");
     reference2.push_str("def");
                             </script></code></pre>
-                            <pre class="html"><code data-trim><script type="text/template">
+                            <pre class="txt"><code data-trim><script type="text/template">
 error[E0596]: cannot borrow `*reference1` as mutable, as it is behind a `&` reference
  --> src/main.rs:5:5
   |
@@ -146,7 +137,7 @@ error[E0596]: cannot borrow `*reference1` as mutable, as it is behind a `&` refe
 5 |     reference1.push_str("abc");
   |     ^^^^^^^^^^ `reference1` is a `&` reference, so the data it refers to cannot be borrowed as mutable
                             </script></code></pre>
-                            mutable references
+                        <p class="lefttext">mutable references</p>
                             <pre class="rust"><code data-trim><script type="text/template">
     let mut my_string = String::new();
     let reference1 = &mut my_string;
@@ -154,7 +145,7 @@ error[E0596]: cannot borrow `*reference1` as mutable, as it is behind a `&` refe
     reference1.push_str("abc");
     reference2.push_str("def");
                             </script></code></pre>
-                            <pre class="html"><code data-trim><script type="text/template">
+                            <pre class="txt"><code data-trim><script type="text/template">
 error[E0499]: cannot borrow `my_string` as mutable more than once at a time
  --> src/main.rs:4:22
   |
@@ -262,6 +253,53 @@ error[E0499]: cannot borrow `my_string` as mutable more than once at a time
                             </script></code></pre>
                             <span style="font-size: 0.66em">The parallel version is 3x <u>slower</u> on my box.</span>
                         </div>
+                    </div>
+                </section>
+
+
+
+                <section style="font-size: 2em">
+                    Aliasing and mutation with <tt>RefCell</tt>
+                            <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
+    let my_string = RefCell::new(String::new());
+    let reference1 = &my_string;
+    let reference2 = &my_string;
+    reference1.borrow_mut().push_str("abc");
+    reference2.borrow_mut().push_str("def");
+    assert_eq!(*my_string.borrow(), "abcdef");
+                            </script></code></pre>
+                </section>
+
+
+
+
+
+                <section style="font-size: 1.3em">
+                    Multithreading with <tt>RefCell</tt>
+                    <div class="centercolumn" style="width: 30em">
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let x = RefCell::new(0);
+    (0..1_000_000).into_par_iter().for_each(|_| {
+        *x.borrow_mut() += 1;
+    });
+
+                            </script></code></pre>
+                            <pre class="txt"><code data-trim><script type="text/template">
+error[E0277]: `RefCell<i32>` cannot be shared between threads safely
+ --> src/main.rs:6:36
+  |
+6 |       (0..1_000_000).into_par_iter().for_each(|_| {
+  |  ____________________________________^^^^^^^^_-
+  | |                                    |
+  | |                                    `RefCell<i32>` cannot be shared between threads safely
+7 | |         *x.borrow_mut() += 1;
+8 | |     });
+  | |_____- within this `[closure@src/main.rs:6:45: 8:6]`
+  |
+  = help: within `[closure@src/main.rs:6:45: 8:6]`, the trait `Sync` is not implemented for `RefCell<i32>`
+  = note: required because it appears within the type `&RefCell<i32>`
+  = note: required because it appears within the type `[closure@src/main.rs:6:45: 8:6]`
+                            </script></code></pre>
                     </div>
                 </section>
 
