@@ -82,13 +82,12 @@ tt{
                 <section style="font-size: 2em">
                     Multithreading with <tt>Arc&lt;Mutex&lt;T&gt;&gt;</tt>
                             <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
-    let my_string: Arc<Mutex<String>> = Arc::new(Mutex::new(String::new()));
+    let my_string = Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
         let arc_clone = my_string.clone();
         let thread_handle = thread::spawn(move || {
-            let mut guard: MutexGuard<String> = arc_clone.lock().unwrap();
-            guard.push_str("some characters");
+            arc_clone.lock().unwrap().push_str("some characters");
         });
         thread_handles.push(thread_handle);
     }
@@ -101,9 +100,9 @@ tt{
 
 
                 <section style="font-size: 2em">
-                    Mutable aliasing with <tt>Mutex</tt>
+                    Aliasing and mutation with <tt>Mutex</tt>
                             <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
-    let my_string: Mutex<String> = Mutex::new(String::new());
+    let my_string = Mutex::new(String::new());
     let reference1 = &my_string;
     let reference2 = &my_string;
     reference1.lock().unwrap().push_str("abc");
@@ -115,7 +114,7 @@ tt{
 
 
                 <section style="font-size: 1em">
-                    Mutable aliasing <em>without</em> <tt>Mutex</tt>
+                    Aliasing and mutation <em>without</em> <tt>Mutex</tt>
                     <div class="centercolumn" style="width: 34em">
                         <style>
                             pre {
@@ -126,7 +125,7 @@ tt{
                     <p>
                             shared references
                             <pre class="rust"><code data-trim><script type="text/template">
-    let my_string: String = String::new();
+    let my_string = String::new();
     let reference1 = &my_string;
     let reference2 = &my_string;
     reference1.push_str("abc");
@@ -144,7 +143,7 @@ error[E0596]: cannot borrow `*reference1` as mutable, as it is behind a `&` refe
                             </script></code></pre>
                             mutable references
                             <pre class="rust"><code data-trim><script type="text/template">
-    let mut my_string: String = String::new();
+    let mut my_string = String::new();
     let reference1 = &mut my_string;
     let reference2 = &mut my_string;
     reference1.push_str("abc");
@@ -179,6 +178,40 @@ error[E0499]: cannot borrow `my_string` as mutable more than once at a time
                 <p>
                     <a href="https://doc.rust-lang.org/std/sync/struct.Mutex.html#method.lock"><img src="mutex_lock_arrow.png"></a>
                     <a href="https://docs.rs/rustc-std-workspace-std/1.0.1/std/sync/struct.MutexGuard.html"><img src="mutexguard_derefmut.png"></a>
+                </section>
+
+
+
+
+
+
+                <section style="font-size: 2em">
+                    Aliasing and mutation with <tt>RwLock</tt>
+                            <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
+    let my_string = RwLock::new(String::new());
+    let reference1 = &my_string;
+    let reference2 = &my_string;
+    reference1.write().unwrap().push_str("abc");
+    reference2.write().unwrap().push_str("def");
+    assert_eq!(*my_string.read().unwrap(), "abcdef");
+                            </script></code></pre>
+                </section>
+
+
+
+
+
+
+                <section style="font-size: 2em">
+                    Aliasing and mutation with atomics
+                            <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
+    let my_int = AtomicU64::new(0);
+    let reference1 = &my_int;
+    let reference2 = &my_int;
+    reference1.fetch_add(1, Ordering::SeqCst);
+    reference2.fetch_add(1, Ordering::SeqCst);
+    assert_eq!(my_int.load(Ordering::SeqCst), 2);
+                            </script></code></pre>
                 </section>
 
 
