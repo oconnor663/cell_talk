@@ -90,9 +90,9 @@ tt{
     let my_string = Arc::new(Mutex::new(String::new()));
     let mut thread_handles = Vec::new();
     for _ in 0..10 {
-        let arc_clone = my_string.clone();
+        let my_string = my_string.clone();
         let thread_handle = thread::spawn(move || {
-            arc_clone.lock().unwrap().push_str("some characters");
+            my_string.lock().unwrap().push_str("some characters");
         });
         thread_handles.push(thread_handle);
     }
