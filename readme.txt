@@ -1,6 +1,8 @@
 Interior Mutability Intermediate and Advanced Rust Programmers
 
 The mutable aliasing rule has loopholes: interior mutability.
+"usually not allowed to modify things through it"
+  - Firehose video reference: https://youtu.be/IPmRDS0OSxM?t=295
 Mutex
   - Normally: Append to a string from multiple threads.
     - example from Firehose
