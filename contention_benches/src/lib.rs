@@ -13,7 +13,7 @@ fn increment_mutex_serial(x: &Mutex<u64>, n: u64) {
     });
 }
 
-const N: u64 = 1_000;
+const N: u64 = 1_000_000;
 
 #[bench]
 fn bench_increment_mutex_serial(b: &mut Bencher) {

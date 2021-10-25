@@ -48,6 +48,11 @@ tt{
     margin-left: 0;
     margin-right: 0;
 }
+.lefttext {
+    padding-left: 40px;
+    text-align: left;
+    font-size: 0.75em;
+}
 </style>
     </head>
     <body>
@@ -212,6 +217,52 @@ error[E0499]: cannot borrow `my_string` as mutable more than once at a time
     reference2.fetch_add(1, Ordering::SeqCst);
     assert_eq!(my_int.load(Ordering::SeqCst), 2);
                             </script></code></pre>
+                </section>
+
+
+
+
+
+                <section style="font-size: 1.5em">
+                    Benchmarking contention
+                    <div class="container">
+                        <div class="col">
+                            <p style="text-align: center"><tt>Mutex</tt></p>
+                            <p class="lefttext">serial</p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let x = Mutex::new(0);
+    (0..1_000_000).into_iter().for_each(|_| {
+        *x.lock().unwrap() += 1;
+    });
+                            </script></code></pre>
+                            <p class="lefttext">parallel</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let x = Mutex::new(0);
+    (0..1_000_000).into_par_iter().for_each(|_| {
+        *x.lock().unwrap() += 1;
+    });
+                            </script></code></pre>
+                            <span style="font-size: 0.66em">The parallel version is 9x <u>slower</u> on my box.</span>
+                        </div>
+                        <div class="col">
+                            <p style="text-align: center">atomics</p>
+                            <p class="lefttext">serial</p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let x = AtomicU64::new(0);
+    (0..1_000_000).into_iter().for_each(|_| {
+        x.fetch_add(1, Ordering::SeqCst);
+    });
+                            </script></code></pre>
+                            <p class="lefttext">parallel</tt></p>
+                            <pre class="rust"><code data-trim><script type="text/template">
+    let x = AtomicU64::new(0);
+    (0..1_000_000).into_par_iter().for_each(|_| {
+        x.fetch_add(1, Ordering::SeqCst);
+    });
+                            </script></code></pre>
+                            <span style="font-size: 0.66em">The parallel version is 3x <u>slower</u> on my box.</span>
+                        </div>
+                    </div>
                 </section>
 
 
