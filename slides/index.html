@@ -51,6 +51,9 @@ tt{
     text-align: left;
     font-size: 0.75em;
 }
+img {
+    filter: drop-shadow(0 0 5px #93a1a1);
+}
 </style>
     </head>
     <body>
@@ -300,6 +303,7 @@ error[E0277]: `RefCell<i32>` cannot be shared between threads safely
   = note: required because it appears within the type `&RefCell<i32>`
   = note: required because it appears within the type `[closure@src/main.rs:6:45: 8:6]`
                             </script></code></pre>
+                            <a href="https://doc.rust-lang.org/std/cell/struct.RefCell.html#impl-Sync"><img src="refcell_sync.png"></a>
                     </div>
                 </section>
 
