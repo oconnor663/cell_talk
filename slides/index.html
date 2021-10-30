@@ -310,6 +310,22 @@ error[E0277]: `RefCell<i32>` cannot be shared between threads safely
 
 
                 <section style="font-size: 2em">
+                    A quick look back at <tt>Mutex</tt> and <tt>RwLock</tt>
+                    <p>
+                    <a href="https://doc.rust-lang.org/std/sync/struct.RwLock.html#impl-Sync"><img src="rwlock_sync.png"></a>
+                    <br>
+                    <a href="https://doc.rust-lang.org/std/sync/struct.Mutex.html#impl-Sync"><img src="mutex_sync.png"></a>
+                            <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
+    let x = Mutex::new(RefCell::new(0));
+    (0..1_000_000).into_par_iter().for_each(|_| {
+        *x.lock().unwrap().borrow_mut() += 1;
+    });
+                            </script></code></pre>
+                </section>
+
+
+
+                <section style="font-size: 2em">
                     Aliasing and mutation of <tt>Copy</tt> types with <tt>Cell</tt>
                             <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
     let my_int = Cell::new(0);
