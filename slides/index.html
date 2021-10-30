@@ -309,6 +309,65 @@ error[E0277]: `RefCell<i32>` cannot be shared between threads safely
 
 
 
+                <section style="font-size: 2em">
+                    Aliasing and mutation of <tt>Copy</tt> types with <tt>Cell</tt>
+                            <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
+    let my_int = Cell::new(0);
+    let reference1 = &my_int;
+    let reference2 = &my_int;
+    reference1.set(reference1.get() + 1);
+    reference2.set(reference2.get() + 1);
+    assert_eq!(my_int.get(), 0);
+                            </script></code></pre>
+                </section>
+
+
+
+                <section style="font-size: 1.3em">
+                    Aliasing and mutation of non-<tt>Copy</tt> types with <tt>Cell</tt>
+                    <div class="centercolumn" style="width: 35em">
+                            <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
+    let my_string = Cell::new(String::new());
+    let reference1 = &my_string;
+    let reference2 = &my_string;
+    reference1.set(reference1.get() + "abc");
+                            </script></code></pre>
+                            <pre class="txt"><code data-trim><script type="text/template">
+error[E0599]: the method `get` exists for reference `&Cell<String>`, but its trait bounds were not satisfied
+   --> src/main.rs:6:31
+    |
+6   |     reference1.set(reference1.get() + "abc");
+    |                               ^^^
+    |
+   ::: /home/jacko/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/alloc/src/string.rs:292:1
+    |
+292 | pub struct String {
+    | ----------------- doesn't satisfy `String: Copy`
+    |
+    = note: the following trait bounds were not satisfied:
+            `String: Copy`
+                            </script></code></pre>
+                    <a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.get"><img src="cell_get.png"></a>
+                        </div>
+                </section>
+
+
+
+                <section style="font-size: 2em">
+                    Aliasing and mutation of non-<tt>Copy</tt> types with <tt>Cell</tt>
+                            <pre class="rust" style="width: fit-content"><code data-trim style="padding: 1ch;"><script type="text/template">
+    let my_string = Cell::new(String::new());
+    let reference1 = &my_string;
+    let reference2 = &my_string;
+    reference1.set(reference1.take() + "abc");
+    reference2.set(reference2.take() + "def");
+    assert_eq!(my_string.take(), "abcdef");
+                            </script></code></pre>
+                    <a href="https://doc.rust-lang.org/std/cell/struct.Cell.html#method.take"><img src="cell_take.png"></a>
+                </section>
+
+
+
 
 
 
