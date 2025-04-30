@@ -97,3 +97,8 @@ RefCell
 - https://github.com/rust-lang/rust/blob/c9d4ad07c4c166d655f11862e03c10100dcb704b/doc/tutorial-borrowed-ptr.md
 - https://medium.com/@GolDDranks/things-rust-doesnt-let-you-do-draft-f596a3c740a5
 - https://users.rust-lang.org/t/why-does-cell-require-copy-instead-of-clone/5769/3
+
+
+demo:
+- building a RefCell without UnsafeCell
+- implementing Clone for Cell
