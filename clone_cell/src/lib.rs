@@ -25,6 +25,8 @@ mod tests {
         #[derive(Default)]
         struct Weird {
             value: i32,
+            // Note: You can also make this work with shared references instead of Rc. The
+            // lifetimes are odd, but it compiles, and it's safe.
             other: Option<Rc<Cell<Weird>>>,
         }
 
