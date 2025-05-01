@@ -102,3 +102,18 @@ RefCell
 demo:
 - building a RefCell without UnsafeCell
 - implementing Clone for Cell
+
+topics:
+  - Arc<Mutex>: Deref, DerefMut, MutexGuard, poisoning
+    - the guard lifetime is a lie
+    - https://docs.rs/parking_lot/latest/parking_lot/type.Mutex.html
+  - RwLock: Sync differences
+  - RefCell
+    - BadRefCell and unsoundness
+  - UnsafeCell
+  - Cell
+    - clone_cell
+  - &Cell
+    - https://doc.rust-lang.org/std/cell/struct.Cell.html#method.from_mut
+  - &ReadOnlyCell
+    - https://pyo3.rs/main/doc/pyo3/buffer/struct.readonlycell
