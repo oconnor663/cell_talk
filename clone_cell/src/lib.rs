@@ -25,7 +25,7 @@ mod tests {
         #[derive(Default)]
         struct Weird {
             value: i32,
-            other: Rc<Cell<Option<Weird>>>,
+            other: Option<Rc<Cell<Weird>>>,
         }
 
         impl Clone for Weird {
@@ -33,7 +33,9 @@ mod tests {
                 let value_ref: &i32 = &self.value;
                 let first_read = *value_ref;
 
-                self.other.set(Some(Weird::default()));
+                if let Some(other) = &self.other {
+                    other.set(Weird::default());
+                }
 
                 let second_read = *value_ref;
                 assert_eq!(first_read, second_read, "&i32 can't be modified");
@@ -42,11 +44,11 @@ mod tests {
             }
         }
 
-        let weird = Rc::new(Cell::new(None));
-        weird.set(Some(Weird {
+        let weird = Rc::new(Cell::new(Weird::default()));
+        weird.set(Weird {
             value: 42,
-            other: Rc::clone(&weird),
-        }));
+            other: Some(Rc::clone(&weird)),
+        });
 
         clone_cell(&weird);
     }
